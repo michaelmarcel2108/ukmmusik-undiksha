@@ -41,7 +41,7 @@ export default function AdminProker() {
     
     setIsSaving(false);
     if (!error) {
-      setFormData({ title: "", slug: "", summary: "", date: "" });
+      setFormData({ title: "", slug: "", summary: "", date: "", cover_image_url: "" });
       setIsAdding(false);
       fetchPrograms();
     } else {
