@@ -80,7 +80,8 @@ export default function AdminBookingStudioPage() {
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-muted/50 border-b border-border">
@@ -93,15 +94,11 @@ export default function AdminBookingStudioPage() {
             <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-foreground/50">
-                    Memuat data...
-                  </td>
+                  <td colSpan={4} className="p-8 text-center text-foreground/50">Memuat data...</td>
                 </tr>
               ) : bookings.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-foreground/50">
-                    Belum ada pengajuan booking studio.
-                  </td>
+                  <td colSpan={4} className="p-8 text-center text-foreground/50">Belum ada pengajuan booking studio.</td>
                 </tr>
               ) : (
                 bookings.map((booking) => (
@@ -137,38 +134,114 @@ export default function AdminBookingStudioPage() {
                         </span>
                       )}
                     </td>
-                    <td className="p-4 text-right space-x-2">
-                      {booking.status === 'pending' && (
-                        <>
-                          <button
-                            onClick={() => updateStatus(booking.id, 'approved')}
-                            className="p-2 bg-green-500/10 text-green-600 hover:bg-green-500/20 rounded-lg transition-colors border border-green-500/20"
-                            title="Setujui Booking"
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => updateStatus(booking.id, 'rejected')}
-                            className="p-2 bg-red-500/10 text-red-600 hover:bg-red-500/20 rounded-lg transition-colors border border-red-500/20"
-                            title="Tolak Booking"
-                          >
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        </>
-                      )}
-                      <button
-                        onClick={() => deleteBooking(booking.id)}
-                        className="p-2 bg-foreground/5 text-foreground/50 hover:bg-red-500/10 hover:text-red-600 rounded-lg transition-colors"
-                        title="Hapus Data"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <td className="p-4">
+                      <div className="flex justify-end gap-2">
+                        {booking.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={() => updateStatus(booking.id, 'approved')}
+                              className="p-2 bg-green-500/10 text-green-600 hover:bg-green-500/20 rounded-lg transition-colors border border-green-500/20"
+                              title="Setujui Booking"
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => updateStatus(booking.id, 'rejected')}
+                              className="p-2 bg-red-500/10 text-red-600 hover:bg-red-500/20 rounded-lg transition-colors border border-red-500/20"
+                              title="Tolak Booking"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => deleteBooking(booking.id)}
+                          className="p-2 bg-foreground/5 text-foreground/50 hover:bg-red-500/10 hover:text-red-600 rounded-lg transition-colors"
+                          title="Hapus Data"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-border">
+          {loading ? (
+            <div className="p-8 text-center text-foreground/50">Memuat data...</div>
+          ) : bookings.length === 0 ? (
+            <div className="p-8 text-center text-foreground/50">Belum ada pengajuan booking studio.</div>
+          ) : (
+            bookings.map((booking) => (
+              <div key={booking.id} className="p-4 space-y-4">
+                <div className="flex justify-between items-start gap-2">
+                  <div>
+                    <div className="font-bold text-lg">{booking.band_name}</div>
+                    <div className="text-sm text-foreground/60">{booking.contact_info}</div>
+                  </div>
+                  <div>
+                    {booking.status === 'pending' && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-600 border border-yellow-500/20">
+                        <Clock4 className="w-3.5 h-3.5" /> Pending
+                      </span>
+                    )}
+                    {booking.status === 'approved' && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600 border border-green-500/20">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Disetujui
+                      </span>
+                    )}
+                    {booking.status === 'rejected' && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600 border border-red-500/20">
+                        <XCircle className="w-3.5 h-3.5" /> Ditolak
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-muted/30 rounded-xl p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Calendar className="w-4 h-4 text-ukmred" />
+                    {format(parseISO(booking.booking_date), 'dd MMM yyyy', { locale: id })}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
+                    <Clock className="w-4 h-4" />
+                    {booking.start_time.substring(0, 5)} - {booking.end_time.substring(0, 5)}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {booking.status === 'pending' && (
+                    <>
+                      <button
+                        onClick={() => updateStatus(booking.id, 'approved')}
+                        className="flex-1 flex items-center justify-center gap-2 p-2.5 bg-green-500/10 text-green-600 hover:bg-green-500/20 rounded-xl transition-colors border border-green-500/20 text-sm font-medium"
+                      >
+                        <CheckCircle2 className="w-4 h-4" /> Setujui
+                      </button>
+                      <button
+                        onClick={() => updateStatus(booking.id, 'rejected')}
+                        className="flex-1 flex items-center justify-center gap-2 p-2.5 bg-red-500/10 text-red-600 hover:bg-red-500/20 rounded-xl transition-colors border border-red-500/20 text-sm font-medium"
+                      >
+                        <XCircle className="w-4 h-4" /> Tolak
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => deleteBooking(booking.id)}
+                    className="flex-shrink-0 p-2.5 bg-foreground/5 text-foreground/50 hover:bg-red-500/10 hover:text-red-600 rounded-xl transition-colors"
+                    title="Hapus Data"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
