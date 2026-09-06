@@ -11,7 +11,8 @@ import {
   Package, 
   Phone,
   LogOut,
-  Calendar
+  Calendar,
+  X
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -27,7 +28,7 @@ const menuItems = [
   { name: "Kontak", href: "/admin/contact", icon: Phone },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -39,12 +40,17 @@ export default function AdminSidebar() {
   };
 
   return (
-    <div className="w-64 bg-card border-r border-border h-screen sticky top-0 flex flex-col hidden md:flex">
-      <div className="p-6 border-b border-border">
+    <div className="w-64 bg-card border-r border-border h-screen sticky top-0 flex flex-col">
+      <div className="p-6 border-b border-border flex justify-between items-center">
         <Link href="/admin/dashboard" className="flex items-center gap-2">
           <span className="text-xl font-bold text-ukmred">Admin</span>
           <span className="text-xl font-bold text-foreground">Panel</span>
         </Link>
+        {onClose && (
+          <button onClick={onClose} className="md:hidden p-1 text-foreground/50 hover:text-foreground">
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto py-4">
@@ -57,6 +63,7 @@ export default function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={onClose}
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
                   isActive 
                     ? "bg-ukmred text-white" 
