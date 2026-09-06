@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
-import { Calendar, Clock, CheckCircle2, XCircle, Clock4, Trash2 } from "lucide-react";
+import { Calendar, Clock, CheckCircle2, XCircle, Clock4, Trash2, AlertCircle } from "lucide-react";
 
 type Booking = {
   id: string;
@@ -20,11 +20,18 @@ type Booking = {
 export default function AdminBookingStudioPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     fetchBookings();
   }, []);
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const fetchBookings = async () => {
     setLoading(true);
@@ -36,6 +43,7 @@ export default function AdminBookingStudioPage() {
 
     if (error) {
       console.error("Error fetching bookings:", error);
+      showToast("Gagal mengambil data: " + error.message, 'error');
     } else {
       setBookings(data || []);
     }
@@ -49,29 +57,63 @@ export default function AdminBookingStudioPage() {
       .eq("id", bookingId);
 
     if (error) {
-      alert("Gagal mengupdate status: " + error.message);
+      showToast("Gagal mengupdate status: " + error.message, 'error');
     } else {
       setBookings(bookings.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
+      showToast(`Booking berhasil di${newStatus === 'approved' ? 'setujui' : 'tolak'}!`);
     }
   };
 
-  const deleteBooking = async (bookingId: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus booking ini?")) return;
+  const handleConfirmDelete = async () => {
+    if (!confirmDeleteId) return;
     
     const { error } = await supabase
       .from("studio_bookings")
       .delete()
-      .eq("id", bookingId);
+      .eq("id", confirmDeleteId);
 
     if (error) {
-      alert("Gagal menghapus booking: " + error.message);
+      showToast("Gagal menghapus booking: " + error.message, 'error');
     } else {
-      setBookings(bookings.filter(b => b.id !== bookingId));
+      setBookings(bookings.filter(b => b.id !== confirmDeleteId));
+      showToast("Data booking berhasil dihapus!");
     }
+    setConfirmDeleteId(null);
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 relative">
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed bottom-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg border flex items-center gap-3 transition-all duration-300 ${toast.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+          {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+          <span className="font-medium text-sm">{toast.message}</span>
+        </div>
+      )}
+
+      {/* Custom Confirm Modal */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border p-6 rounded-2xl max-w-sm w-full shadow-xl">
+            <h3 className="text-lg font-bold mb-2">Hapus Booking?</h3>
+            <p className="text-foreground/70 text-sm mb-6">Tindakan ini tidak dapat dibatalkan. Apakah Anda yakin ingin menghapus data booking ini selamanya?</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setConfirmDeleteId(null)}
+                className="px-4 py-2 rounded-xl text-sm font-medium hover:bg-muted transition-colors"
+              >
+                Batal
+              </button>
+              <button 
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition-colors"
+              >
+                Ya, Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Manajemen Booking Studio</h1>
@@ -155,7 +197,7 @@ export default function AdminBookingStudioPage() {
                           </>
                         )}
                         <button
-                          onClick={() => deleteBooking(booking.id)}
+                          onClick={() => setConfirmDeleteId(booking.id)}
                           className="p-2 bg-foreground/5 text-foreground/50 hover:bg-red-500/10 hover:text-red-600 rounded-lg transition-colors"
                           title="Hapus Data"
                         >
@@ -232,7 +274,7 @@ export default function AdminBookingStudioPage() {
                     </>
                   )}
                   <button
-                    onClick={() => deleteBooking(booking.id)}
+                    onClick={() => setConfirmDeleteId(booking.id)}
                     className="flex-shrink-0 p-2.5 bg-foreground/5 text-foreground/50 hover:bg-red-500/10 hover:text-red-600 rounded-xl transition-colors"
                     title="Hapus Data"
                   >
