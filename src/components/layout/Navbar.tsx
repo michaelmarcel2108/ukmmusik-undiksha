@@ -17,6 +17,7 @@ export default function Navbar() {
     { name: "Galeri", href: "/galeri" },
     { name: "Katalog Sewa", href: "/katalog-sewa" },
     { name: "Booking Studio", href: "/booking-studio" },
+    { name: "Penilaian Lomba", href: "/penilaian" },
   ];
 
   return (

@@ -12,7 +12,10 @@ import {
   Phone,
   LogOut,
   Calendar,
-  X
+  X,
+  Music,
+  ClipboardList,
+  UserCheck
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -25,6 +28,9 @@ const menuItems = [
   { name: "Program Kerja", href: "/admin/proker", icon: FileText },
   { name: "Bidang & Anggota", href: "/admin/bidang", icon: Users },
   { name: "Barang Sewa", href: "/admin/rental", icon: Package },
+  { name: "Peserta Band", href: "/admin/bands", icon: Music },
+  { name: "Juri Lomba", href: "/admin/juries", icon: UserCheck },
+  { name: "Skor Band", href: "/admin/scores", icon: ClipboardList },
   { name: "Kontak", href: "/admin/contact", icon: Phone },
 ];
 

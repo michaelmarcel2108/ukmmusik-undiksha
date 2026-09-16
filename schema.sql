@@ -134,3 +134,51 @@ CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = '
 CREATE POLICY "Admin Insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'public_assets' AND auth.role() = 'authenticated');
 CREATE POLICY "Admin Update" ON storage.objects FOR UPDATE USING (bucket_id = 'public_assets' AND auth.role() = 'authenticated');
 CREATE POLICY "Admin Delete" ON storage.objects FOR DELETE USING (bucket_id = 'public_assets' AND auth.role() = 'authenticated');
+
+-- 7. Bands (Peserta Lomba)
+CREATE TABLE public.bands (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text NOT NULL,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 8. Band Scores (Penilaian Juri)
+CREATE TABLE public.band_scores (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  jury_name text NOT NULL,
+  band_id uuid REFERENCES public.bands(id) ON DELETE CASCADE,
+  harmonisasi integer CHECK (harmonisasi >= 50 AND harmonisasi <= 100),
+  skill integer CHECK (skill >= 50 AND skill <= 100),
+  performance integer CHECK (performance >= 50 AND performance <= 100),
+  total_score integer,
+  keterangan text,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for new tables
+ALTER TABLE public.bands ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.band_scores ENABLE ROW LEVEL SECURITY;
+
+-- Policies for Bands
+CREATE POLICY "Allow public read access on bands" ON public.bands FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated full access on bands" ON public.bands FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- Policies for Band Scores
+CREATE POLICY "Allow public insert access on band_scores" ON public.band_scores FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow authenticated full access on band_scores" ON public.band_scores FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+
+-- 9. Juries (Juri Lomba)
+CREATE TABLE public.juries (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text NOT NULL,
+  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS for juries
+ALTER TABLE public.juries ENABLE ROW LEVEL SECURITY;
+
+-- Policies for Juries
+CREATE POLICY "Allow public read access on juries" ON public.juries FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated full access on juries" ON public.juries FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
