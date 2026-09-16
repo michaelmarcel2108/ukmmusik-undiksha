@@ -3,15 +3,19 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Edit, Trash2, X, Music } from "lucide-react";
+import Toast from "@/components/ui/Toast";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function AdminBands() {
   const [bands, setBands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // State for Add/Edit Band Form
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState<any>({ id: "", name: "" });
   const [isSaving, setIsSaving] = useState(false);
+
+  const [toast, setToast] = useState<{message: string, type: "success"|"error"} | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -30,9 +34,19 @@ export default function AdminBands() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus peserta band ini?")) return;
-    await supabase.from("bands").delete().eq("id", id);
-    fetchBands();
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    const { error } = await supabase.from("bands").delete().eq("id", deleteId);
+    if (error) {
+      setToast({ message: "Gagal menghapus: " + error.message, type: "error" });
+    } else {
+      setToast({ message: "Peserta band berhasil dihapus!", type: "success" });
+      fetchBands();
+    }
+    setDeleteId(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,9 +68,10 @@ export default function AdminBands() {
     if (!error) {
       setFormData({ id: "", name: "" });
       setIsAdding(false);
+      setToast({ message: "Peserta band berhasil disimpan!", type: "success" });
       fetchBands();
     } else {
-      alert("Gagal menyimpan: " + error.message);
+      setToast({ message: "Gagal menyimpan: " + error.message, type: "error" });
     }
   };
 
@@ -66,7 +81,15 @@ export default function AdminBands() {
   };
 
   return (
-    <div>
+    <div className="relative">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <ConfirmModal 
+        isOpen={!!deleteId} 
+        title="Hapus Peserta Band?" 
+        message="Data peserta band ini akan dihapus secara permanen."
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Music className="text-ukmred" />

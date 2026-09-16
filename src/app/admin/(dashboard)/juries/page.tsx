@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Edit, Trash2, X, UserCheck } from "lucide-react";
+import Toast from "@/components/ui/Toast";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function AdminJuries() {
   const [juries, setJuries] = useState<any[]>([]);
@@ -12,6 +14,9 @@ export default function AdminJuries() {
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState<any>({ id: "", name: "" });
   const [isSaving, setIsSaving] = useState(false);
+
+  const [toast, setToast] = useState<{message: string, type: "success"|"error"} | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -30,9 +35,19 @@ export default function AdminJuries() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus juri ini?")) return;
-    await supabase.from("juries").delete().eq("id", id);
-    fetchJuries();
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    const { error } = await supabase.from("juries").delete().eq("id", deleteId);
+    if (error) {
+      setToast({ message: "Gagal menghapus: " + error.message, type: "error" });
+    } else {
+      setToast({ message: "Juri berhasil dihapus!", type: "success" });
+      fetchJuries();
+    }
+    setDeleteId(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,9 +69,10 @@ export default function AdminJuries() {
     if (!error) {
       setFormData({ id: "", name: "" });
       setIsAdding(false);
+      setToast({ message: "Juri berhasil disimpan!", type: "success" });
       fetchJuries();
     } else {
-      alert("Gagal menyimpan: " + error.message);
+      setToast({ message: "Gagal menyimpan: " + error.message, type: "error" });
     }
   };
 
@@ -66,7 +82,15 @@ export default function AdminJuries() {
   };
 
   return (
-    <div>
+    <div className="relative">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <ConfirmModal 
+        isOpen={!!deleteId} 
+        title="Hapus Juri?" 
+        message="Data juri ini akan dihapus secara permanen."
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <UserCheck className="text-ukmred" />

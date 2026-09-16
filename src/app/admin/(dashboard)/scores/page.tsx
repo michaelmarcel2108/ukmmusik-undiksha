@@ -3,10 +3,15 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ClipboardList, Trash2, Trophy, Medal } from "lucide-react";
+import Toast from "@/components/ui/Toast";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 export default function AdminScores() {
   const [scores, setScores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [toast, setToast] = useState<{message: string, type: "success"|"error"} | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -31,13 +36,31 @@ export default function AdminScores() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus data penilaian ini?")) return;
-    await supabase.from("band_scores").delete().eq("id", id);
-    fetchScores();
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    const { error } = await supabase.from("band_scores").delete().eq("id", deleteId);
+    if (error) {
+      setToast({ message: "Gagal menghapus: " + error.message, type: "error" });
+    } else {
+      setToast({ message: "Data penilaian berhasil dihapus!", type: "success" });
+      fetchScores();
+    }
+    setDeleteId(null);
   };
 
   return (
-    <div>
+    <div className="relative">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <ConfirmModal 
+        isOpen={!!deleteId} 
+        title="Hapus Penilaian?" 
+        message="Data penilaian juri ini akan dihapus secara permanen."
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <ClipboardList className="text-ukmred" />

@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Calendar, Clock4 } from "lucide-react";
+import { Calendar, Clock4, Trophy, Music } from "lucide-react";
 
 export default async function DashboardHome() {
   const supabase = await createClient();
@@ -67,14 +67,47 @@ export default async function DashboardHome() {
           </Link>
         </div>
 
+        {/* Panel Event Rotasi X */}
+        <div className="bg-card p-6 rounded-2xl border border-border lg:col-span-1 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-ukmred" />
+                <h2 className="text-lg font-bold">Event Aktif</h2>
+              </div>
+              <span className="bg-red-500/10 text-red-500 text-xs font-bold px-2 py-1 rounded-full animate-pulse">LIVE</span>
+            </div>
+            
+            <div className="space-y-3 mb-6">
+              <div className="bg-background p-4 rounded-xl border border-border">
+                <h3 className="font-black text-xl mb-1">ROTASI X</h3>
+                <p className="text-sm text-foreground/60 flex items-center gap-1 mb-3">
+                  <Music className="w-4 h-4" /> Lomba Band Tingkat Nasional
+                </p>
+                <div className="flex justify-between items-center text-sm font-medium">
+                  <span>Status Penilaian:</span>
+                  <span className="text-ukmred">Berlangsung</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <Link 
+            href="/admin/scores"
+            className="block text-center w-full py-2.5 bg-ukmred hover:bg-ukmred-dark text-white rounded-xl text-sm font-bold transition-colors shadow-lg"
+          >
+            Lihat Rekapitulasi Skor
+          </Link>
+        </div>
+
         {/* Panel Welcome */}
-        <div className="bg-card p-8 rounded-2xl border border-border lg:col-span-2 shadow-sm">
+        <div className="bg-card p-8 rounded-2xl border border-border lg:col-span-1 shadow-sm">
           <h2 className="text-xl font-bold mb-4">Selamat Datang di Admin Panel!</h2>
-          <p className="text-foreground/70 mb-4">
+          <p className="text-foreground/70 mb-4 text-sm">
             Gunakan menu di sebelah kiri untuk mulai mengelola konten website UKM Musik Undiksha.
           </p>
-          <p className="text-foreground/70">
-            <strong>Perhatian:</strong> Pastikan gambar yang Anda unggah memiliki ukuran yang optimal (direkomendasikan di bawah 1MB) agar website tetap cepat dimuat.
+          <p className="text-foreground/70 text-sm">
+            <strong>Perhatian:</strong> Pastikan gambar yang Anda unggah berukuran optimal agar web tetap cepat.
           </p>
         </div>
       </div>

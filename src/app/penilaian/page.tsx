@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Music, Save } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
+import Toast from "@/components/ui/Toast";
 
 export default function PenilaianJuri() {
   const [bands, setBands] = useState<any[]>([]);
@@ -14,6 +15,8 @@ export default function PenilaianJuri() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+
+  const [toast, setToast] = useState<{message: string, type: "success"|"error"} | null>(null);
 
   const [juryName, setJuryName] = useState("");
   const [scores, setScores] = useState<Record<string, {
@@ -88,7 +91,7 @@ export default function PenilaianJuri() {
 
   const submitSingleBand = async (bandId: string) => {
     if (!juryName.trim()) {
-      alert("Mohon isi Nama Juri terlebih dahulu di bagian atas.");
+      setToast({ message: "Mohon pilih Nama Juri terlebih dahulu di bagian atas.", type: "error" });
       return;
     }
 
@@ -100,15 +103,15 @@ export default function PenilaianJuri() {
     const p = parseInt(s.performance);
 
     if (isNaN(h) || h < 50 || h > 100) {
-      alert("Skor Harmonisasi harus antara 50 - 100.");
+      setToast({ message: "Skor Harmonisasi harus antara 50 - 100.", type: "error" });
       return;
     }
     if (isNaN(sk) || sk < 50 || sk > 100) {
-      alert("Skor Skill harus antara 50 - 100.");
+      setToast({ message: "Skor Skill harus antara 50 - 100.", type: "error" });
       return;
     }
     if (isNaN(p) || p < 50 || p > 100) {
-      alert("Skor Performance harus antara 50 - 100.");
+      setToast({ message: "Skor Performance harus antara 50 - 100.", type: "error" });
       return;
     }
 
@@ -129,8 +132,9 @@ export default function PenilaianJuri() {
     setIsSaving(null);
 
     if (error) {
-      alert("Terjadi kesalahan saat menyimpan penilaian: " + error.message);
+      setToast({ message: "Gagal menyimpan: " + error.message, type: "error" });
     } else {
+      setToast({ message: "Nilai berhasil disimpan!", type: "success" });
       setSubmittedBands(prev => [...prev, bandId]);
     }
   };
@@ -184,7 +188,8 @@ export default function PenilaianJuri() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <Navbar />
 
       <main className="pt-32 pb-16 px-4 md:px-8 max-w-6xl mx-auto">
