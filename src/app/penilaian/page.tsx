@@ -265,7 +265,7 @@ export default function PenilaianJuri() {
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">VOKAL<br/><span className="text-[10px] text-yellow-300">20%</span></th>
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">PENAMPILAN<br/><span className="text-[10px] text-yellow-300">10%</span></th>
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">(MURNI)</span></th>
-                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">(BERAT)</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">%</span></th>
                       <th className="p-4 font-bold min-w-[120px] border-r border-white/20">KET.</th>
                       <th className="p-4 font-bold w-24 text-center">AKSI</th>
                     </tr>

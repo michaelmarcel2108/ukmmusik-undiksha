@@ -100,7 +100,7 @@ export default function AdminScores() {
                     <span className="text-sm font-bold uppercase tracking-wider text-foreground/50 mb-1">{medals[idx].label}</span>
                     <h3 className="text-xl font-black mb-2">{winner.name}</h3>
                     <div className="mt-auto pt-4 border-t border-border w-full">
-                      <span className="text-3xl font-black text-ukmred">{winner.total}</span>
+                      <span className="text-3xl font-black text-ukmred">{Number(winner.total.toFixed(2))}</span>
                       <span className="text-sm text-foreground/50 ml-1">Pts</span>
                     </div>
                   </div>
@@ -139,7 +139,7 @@ export default function AdminScores() {
                       <tr key={idx} className="border-b border-border hover:bg-background/30">
                         <td className="p-3 text-center font-bold text-foreground/50">{idx + 1}</td>
                         <td className="p-3 font-bold">{band.name}</td>
-                        <td className="p-3 text-right font-black text-lg text-ukmred">{band.total}</td>
+                        <td className="p-3 text-right font-black text-lg text-ukmred">{Number(band.total.toFixed(2))}</td>
                       </tr>
                     ));
                   })()}
@@ -168,7 +168,7 @@ export default function AdminScores() {
                 <th className="p-4 font-medium text-foreground/80 text-center">Vokal (20%)</th>
                 <th className="p-4 font-medium text-foreground/80 text-center">Penampilan (10%)</th>
                 <th className="p-4 font-medium text-foreground/80 text-center">Total (Murni)</th>
-                <th className="p-4 font-medium text-foreground/80 text-center">Total (Berat)</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Total (%)</th>
                 <th className="p-4 font-medium text-foreground/80">Keterangan</th>
                 <th className="p-4 font-medium text-foreground/80 text-right">Aksi</th>
               </tr>
@@ -191,7 +191,7 @@ export default function AdminScores() {
                     <td className="p-4 text-center">{item.vokal}</td>
                     <td className="p-4 text-center">{item.penampilan}</td>
                     <td className="p-4 text-center font-bold text-lg">{(item.harmonisasi || 0) + (item.aransemen || 0) + (item.vokal || 0) + (item.penampilan || 0)}</td>
-                    <td className="p-4 text-center font-bold text-ukmred">{item.total_score}</td>
+                    <td className="p-4 text-center font-bold text-ukmred">{Number((item.total_score || 0).toFixed(2))}</td>
                     <td className="p-4 text-sm">{item.keterangan || '-'}</td>
                     <td className="p-4 text-right">
                       <button 
