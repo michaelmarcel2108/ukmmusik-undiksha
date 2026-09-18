@@ -94,6 +94,17 @@ export default function PenilaianJuri() {
     return Number(total.toFixed(2));
   };
 
+  const calculateRawTotal = (bandId: string) => {
+    const s = scores[bandId];
+    if (!s) return 0;
+    const h = parseInt(s.harmonisasi) || 0;
+    const a = parseInt(s.aransemen) || 0;
+    const v = parseInt(s.vokal) || 0;
+    const p = parseInt(s.penampilan) || 0;
+    
+    return h + a + v + p;
+  };
+
   const submitSingleBand = async (bandId: string) => {
     if (!juryName.trim()) {
       setToast({ message: "Mohon pilih Nama Juri terlebih dahulu di bagian atas.", type: "error" });
@@ -234,6 +245,14 @@ export default function PenilaianJuri() {
               </select>
             </div>
 
+            <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 dark:text-yellow-400 p-4 rounded-xl text-sm flex items-start gap-3">
+              <div className="mt-0.5 text-lg">⚠️</div>
+              <div>
+                <strong className="block mb-1 text-base">Perhatian untuk Juri</strong>
+                Mohon berikan nilai dengan rentang <strong>50 hingga 100</strong> untuk setiap kriteria penilaian (Harmonisasi, Aransemen, Vokal, Penampilan).
+              </div>
+            </div>
+
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[800px]">
@@ -245,7 +264,8 @@ export default function PenilaianJuri() {
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">ARANSEMEN<br/><span className="text-[10px] text-yellow-300">30%</span></th>
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">VOKAL<br/><span className="text-[10px] text-yellow-300">20%</span></th>
                       <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">PENAMPILAN<br/><span className="text-[10px] text-yellow-300">10%</span></th>
-                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">%</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">(MURNI)</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">(BERAT)</span></th>
                       <th className="p-4 font-bold min-w-[120px] border-r border-white/20">KET.</th>
                       <th className="p-4 font-bold w-24 text-center">AKSI</th>
                     </tr>
@@ -303,6 +323,9 @@ export default function PenilaianJuri() {
                               className="w-full h-10 text-center font-bold text-base bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
                               placeholder="-"
                             />
+                          </td>
+                          <td className="p-4 text-center font-bold text-lg border-r border-border">
+                            {calculateRawTotal(band.id) > 0 ? calculateRawTotal(band.id) : "-"}
                           </td>
                           <td className="p-4 text-center font-black text-xl text-ukmred border-r border-border">
                             {total > 0 ? total : "-"}

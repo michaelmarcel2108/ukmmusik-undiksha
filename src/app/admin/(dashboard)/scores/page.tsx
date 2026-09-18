@@ -167,7 +167,8 @@ export default function AdminScores() {
                 <th className="p-4 font-medium text-foreground/80 text-center">Aransemen (30%)</th>
                 <th className="p-4 font-medium text-foreground/80 text-center">Vokal (20%)</th>
                 <th className="p-4 font-medium text-foreground/80 text-center">Penampilan (10%)</th>
-                <th className="p-4 font-medium text-foreground/80 text-center">Total</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Total (Murni)</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Total (Berat)</th>
                 <th className="p-4 font-medium text-foreground/80">Keterangan</th>
                 <th className="p-4 font-medium text-foreground/80 text-right">Aksi</th>
               </tr>
@@ -189,6 +190,7 @@ export default function AdminScores() {
                     <td className="p-4 text-center">{item.aransemen}</td>
                     <td className="p-4 text-center">{item.vokal}</td>
                     <td className="p-4 text-center">{item.penampilan}</td>
+                    <td className="p-4 text-center font-bold text-lg">{(item.harmonisasi || 0) + (item.aransemen || 0) + (item.vokal || 0) + (item.penampilan || 0)}</td>
                     <td className="p-4 text-center font-bold text-ukmred">{item.total_score}</td>
                     <td className="p-4 text-sm">{item.keterangan || '-'}</td>
                     <td className="p-4 text-right">
