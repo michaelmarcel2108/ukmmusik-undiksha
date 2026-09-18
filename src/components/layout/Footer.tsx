@@ -71,7 +71,7 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-ukmred mr-2 flex-shrink-0 mt-0.5" />
                 <span className="text-card-foreground/70 text-sm">
-                  Gedung Student Center Lt. 1, Universitas Pendidikan Ganesha, Singaraja, Bali.
+                  V3JQ+75W, jl universitas pendidikan ganesha, Banjar Tegal, Kec. Buleleng, Kabupaten Buleleng, Bali 81116
                 </span>
               </li>
             </ul>

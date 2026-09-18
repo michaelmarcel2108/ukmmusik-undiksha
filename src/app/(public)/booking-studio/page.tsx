@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from "lucide-react";
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isBefore, startOfToday } from "date-fns";
@@ -8,6 +8,12 @@ import { id } from "date-fns/locale";
 
 export default function BookingStudioPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setCurrentMonth(new Date());
+  }, []);
 
   const days = eachDayOfInterval({
     start: startOfMonth(currentMonth),
@@ -70,7 +76,8 @@ export default function BookingStudioPage() {
 
           {days.map((day) => {
             const dateStr = format(day, 'yyyy-MM-dd');
-            const isPast = isBefore(day, today);
+            const isPast = mounted ? isBefore(day, today) : false;
+            const isCurrentDay = mounted ? isToday(day) : false;
             
             return (
               <Link
@@ -82,13 +89,13 @@ export default function BookingStudioPage() {
                     ? 'bg-muted/50 border-transparent text-foreground/30 cursor-not-allowed' 
                     : 'bg-card border-border hover:border-ukmred hover:bg-ukmred/5 hover:text-ukmred cursor-pointer'
                   }
-                  ${isToday(day) ? 'ring-2 ring-ukmred ring-offset-2 ring-offset-background' : ''}
+                  ${isCurrentDay ? 'ring-2 ring-ukmred ring-offset-2 ring-offset-background' : ''}
                 `}
                 onClick={(e) => {
                   if (isPast) e.preventDefault();
                 }}
               >
-                <span className={`text-lg md:text-xl font-medium ${isToday(day) ? 'text-ukmred' : ''}`}>
+                <span className={`text-lg md:text-xl font-medium ${isCurrentDay ? 'text-ukmred' : ''}`}>
                   {format(day, 'd')}
                 </span>
               </Link>

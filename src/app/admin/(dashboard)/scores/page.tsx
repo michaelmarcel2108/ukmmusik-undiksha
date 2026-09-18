@@ -163,9 +163,10 @@ export default function AdminScores() {
                 <th className="p-4 font-medium text-foreground/80">Waktu</th>
                 <th className="p-4 font-medium text-foreground/80">Nama Juri</th>
                 <th className="p-4 font-medium text-foreground/80">Nama Band</th>
-                <th className="p-4 font-medium text-foreground/80 text-center">Harmonisasi</th>
-                <th className="p-4 font-medium text-foreground/80 text-center">Skill</th>
-                <th className="p-4 font-medium text-foreground/80 text-center">Performance</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Harmonisasi (40%)</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Aransemen (30%)</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Vokal (20%)</th>
+                <th className="p-4 font-medium text-foreground/80 text-center">Penampilan (10%)</th>
                 <th className="p-4 font-medium text-foreground/80 text-center">Total</th>
                 <th className="p-4 font-medium text-foreground/80">Keterangan</th>
                 <th className="p-4 font-medium text-foreground/80 text-right">Aksi</th>
@@ -173,9 +174,9 @@ export default function AdminScores() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9} className="p-8 text-center text-foreground/50">Memuat data...</td></tr>
+                <tr><td colSpan={10} className="p-8 text-center text-foreground/50">Memuat data...</td></tr>
               ) : scores.length === 0 ? (
-                <tr><td colSpan={9} className="p-8 text-center text-foreground/50">Belum ada penilaian yang masuk</td></tr>
+                <tr><td colSpan={10} className="p-8 text-center text-foreground/50">Belum ada penilaian yang masuk</td></tr>
               ) : (
                 scores.map((item) => (
                   <tr key={item.id} className="border-b border-border hover:bg-background/30 transition-colors">
@@ -185,8 +186,9 @@ export default function AdminScores() {
                     <td className="p-4 font-bold">{item.jury_name}</td>
                     <td className="p-4 font-medium">{item.bands?.name || '-'}</td>
                     <td className="p-4 text-center">{item.harmonisasi}</td>
-                    <td className="p-4 text-center">{item.skill}</td>
-                    <td className="p-4 text-center">{item.performance}</td>
+                    <td className="p-4 text-center">{item.aransemen}</td>
+                    <td className="p-4 text-center">{item.vokal}</td>
+                    <td className="p-4 text-center">{item.penampilan}</td>
                     <td className="p-4 text-center font-bold text-ukmred">{item.total_score}</td>
                     <td className="p-4 text-sm">{item.keterangan || '-'}</td>
                     <td className="p-4 text-right">

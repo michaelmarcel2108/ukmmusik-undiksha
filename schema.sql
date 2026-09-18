@@ -148,9 +148,10 @@ CREATE TABLE public.band_scores (
   jury_name text NOT NULL,
   band_id uuid REFERENCES public.bands(id) ON DELETE CASCADE,
   harmonisasi integer CHECK (harmonisasi >= 50 AND harmonisasi <= 100),
-  skill integer CHECK (skill >= 50 AND skill <= 100),
-  performance integer CHECK (performance >= 50 AND performance <= 100),
-  total_score integer,
+  aransemen integer CHECK (aransemen >= 50 AND aransemen <= 100),
+  vokal integer CHECK (vokal >= 50 AND vokal <= 100),
+  penampilan integer CHECK (penampilan >= 50 AND penampilan <= 100),
+  total_score numeric,
   keterangan text,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );

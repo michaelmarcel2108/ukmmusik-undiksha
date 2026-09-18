@@ -21,8 +21,9 @@ export default function PenilaianJuri() {
   const [juryName, setJuryName] = useState("");
   const [scores, setScores] = useState<Record<string, {
     harmonisasi: string;
-    skill: string;
-    performance: string;
+    aransemen: string;
+    vokal: string;
+    penampilan: string;
     keterangan: string;
   }>>({});
   const [isSaving, setIsSaving] = useState<string | null>(null); // Track which band is saving
@@ -51,8 +52,9 @@ export default function PenilaianJuri() {
       data.forEach(band => {
         initialScores[band.id] = {
           harmonisasi: "",
-          skill: "",
-          performance: "",
+          aransemen: "",
+          vokal: "",
+          penampilan: "",
           keterangan: ""
         };
       });
@@ -84,9 +86,12 @@ export default function PenilaianJuri() {
     const s = scores[bandId];
     if (!s) return 0;
     const h = parseInt(s.harmonisasi) || 0;
-    const sk = parseInt(s.skill) || 0;
-    const p = parseInt(s.performance) || 0;
-    return h + sk + p;
+    const a = parseInt(s.aransemen) || 0;
+    const v = parseInt(s.vokal) || 0;
+    const p = parseInt(s.penampilan) || 0;
+    
+    const total = (h * 0.40) + (a * 0.30) + (v * 0.20) + (p * 0.10);
+    return Number(total.toFixed(2));
   };
 
   const submitSingleBand = async (bandId: string) => {
@@ -99,19 +104,24 @@ export default function PenilaianJuri() {
     if (!s) return;
 
     const h = parseInt(s.harmonisasi);
-    const sk = parseInt(s.skill);
-    const p = parseInt(s.performance);
+    const a = parseInt(s.aransemen);
+    const v = parseInt(s.vokal);
+    const p = parseInt(s.penampilan);
 
     if (isNaN(h) || h < 50 || h > 100) {
       setToast({ message: "Skor Harmonisasi harus antara 50 - 100.", type: "error" });
       return;
     }
-    if (isNaN(sk) || sk < 50 || sk > 100) {
-      setToast({ message: "Skor Skill harus antara 50 - 100.", type: "error" });
+    if (isNaN(a) || a < 50 || a > 100) {
+      setToast({ message: "Skor Aransemen harus antara 50 - 100.", type: "error" });
+      return;
+    }
+    if (isNaN(v) || v < 50 || v > 100) {
+      setToast({ message: "Skor Vokal harus antara 50 - 100.", type: "error" });
       return;
     }
     if (isNaN(p) || p < 50 || p > 100) {
-      setToast({ message: "Skor Performance harus antara 50 - 100.", type: "error" });
+      setToast({ message: "Skor Penampilan harus antara 50 - 100.", type: "error" });
       return;
     }
 
@@ -121,9 +131,10 @@ export default function PenilaianJuri() {
       jury_name: juryName,
       band_id: bandId,
       harmonisasi: h,
-      skill: sk,
-      performance: p,
-      total_score: h + sk + p,
+      aransemen: a,
+      vokal: v,
+      penampilan: p,
+      total_score: (h * 0.40) + (a * 0.30) + (v * 0.20) + (p * 0.10),
       keterangan: s.keterangan
     };
 
@@ -229,13 +240,14 @@ export default function PenilaianJuri() {
                   <thead>
                     <tr className="bg-ukmred text-white text-sm uppercase tracking-wide">
                       <th className="p-4 font-bold w-12 text-center border-r border-white/20">NO.</th>
-                      <th className="p-4 font-bold border-r border-white/20 min-w-[200px]">NAMA BAND</th>
-                      <th className="p-4 font-bold w-32 text-center border-r border-white/20">HARMONISASI<br /><span className="text-[10px] font-normal opacity-80">(50-100)</span></th>
-                      <th className="p-4 font-bold w-32 text-center border-r border-white/20">SKILL<br /><span className="text-[10px] font-normal opacity-80">(50-100)</span></th>
-                      <th className="p-4 font-bold w-32 text-center border-r border-white/20">PERFORMANCE<br /><span className="text-[10px] font-normal opacity-80">(50-100)</span></th>
-                      <th className="p-4 font-bold w-32 text-center border-r border-white/20">JUML. SKOR</th>
-                      <th className="p-4 font-bold min-w-[150px] border-r border-white/20">KET.</th>
-                      <th className="p-4 font-bold w-32 text-center">AKSI</th>
+                      <th className="p-4 font-bold border-r border-white/20 min-w-[150px]">NAMA BAND</th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">HARMONISASI<br/><span className="text-[10px] text-yellow-300">40%</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">ARANSEMEN<br/><span className="text-[10px] text-yellow-300">30%</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">VOKAL<br/><span className="text-[10px] text-yellow-300">20%</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">PENAMPILAN<br/><span className="text-[10px] text-yellow-300">10%</span></th>
+                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">TOTAL<br/><span className="text-[10px] opacity-80">%</span></th>
+                      <th className="p-4 font-bold min-w-[120px] border-r border-white/20">KET.</th>
+                      <th className="p-4 font-bold w-24 text-center">AKSI</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -255,7 +267,7 @@ export default function PenilaianJuri() {
                               value={s.harmonisasi || ""}
                               onChange={(e) => handleScoreChange(band.id, 'harmonisasi', e.target.value)}
                               disabled={isSubmitted}
-                              className="w-full h-12 text-center font-bold text-lg bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
+                              className="w-full h-10 text-center font-bold text-base bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
                               placeholder="-"
                             />
                           </td>
@@ -263,10 +275,10 @@ export default function PenilaianJuri() {
                             <input
                               type="text"
                               inputMode="numeric"
-                              value={s.skill || ""}
-                              onChange={(e) => handleScoreChange(band.id, 'skill', e.target.value)}
+                              value={s.aransemen || ""}
+                              onChange={(e) => handleScoreChange(band.id, 'aransemen', e.target.value)}
                               disabled={isSubmitted}
-                              className="w-full h-12 text-center font-bold text-lg bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
+                              className="w-full h-10 text-center font-bold text-base bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
                               placeholder="-"
                             />
                           </td>
@@ -274,10 +286,21 @@ export default function PenilaianJuri() {
                             <input
                               type="text"
                               inputMode="numeric"
-                              value={s.performance || ""}
-                              onChange={(e) => handleScoreChange(band.id, 'performance', e.target.value)}
+                              value={s.vokal || ""}
+                              onChange={(e) => handleScoreChange(band.id, 'vokal', e.target.value)}
                               disabled={isSubmitted}
-                              className="w-full h-12 text-center font-bold text-lg bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
+                              className="w-full h-10 text-center font-bold text-base bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
+                              placeholder="-"
+                            />
+                          </td>
+                          <td className="p-2 border-r border-border">
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              value={s.penampilan || ""}
+                              onChange={(e) => handleScoreChange(band.id, 'penampilan', e.target.value)}
+                              disabled={isSubmitted}
+                              className="w-full h-10 text-center font-bold text-base bg-background border border-transparent focus:border-ukmred focus:ring-1 focus:ring-ukmred rounded-md outline-none transition-all disabled:opacity-50"
                               placeholder="-"
                             />
                           </td>
