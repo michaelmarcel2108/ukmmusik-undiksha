@@ -11,6 +11,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Beranda", href: "/" },
+    { name: "Pengurus Inti", href: "/pengurus-inti" },
     { name: "Bidang", href: "/bidang" },
     { name: "Proker", href: "/proker" },
     { name: "Karya", href: "/karya" },
@@ -36,13 +37,13 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden lg:block">
+            <div className="ml-6 flex items-baseline space-x-5 xl:space-x-7">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-foreground/80 hover:text-ukmred transition-colors duration-200 px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-foreground/80 hover:text-ukmred transition-colors duration-200 px-2 py-2 rounded-md text-sm font-medium whitespace-nowrap"
                 >
                   {link.name}
                 </Link>
@@ -51,7 +52,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={toggleMenu}
               type="button"
@@ -72,7 +73,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-background border-b border-border" id="mobile-menu">
+        <div className="lg:hidden bg-background border-b border-border" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <Link

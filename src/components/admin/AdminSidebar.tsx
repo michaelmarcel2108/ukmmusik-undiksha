@@ -14,23 +14,27 @@ import {
   Calendar,
   X,
   Music,
+  Mic2,
   ClipboardList,
-  UserCheck
+  UserCheck,
+  Crown
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 
 const menuItems = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Booking Studio", href: "/admin/booking-studio", icon: Calendar },
-  { name: "Pengaturan Utama", href: "/admin/settings", icon: Settings },
-  { name: "Galeri Aktivitas", href: "/admin/gallery", icon: ImageIcon },
-  { name: "Program Kerja", href: "/admin/proker", icon: FileText },
+  { name: "Pengurus Inti", href: "/admin/pengurus-inti", icon: Crown },
   { name: "Bidang & Anggota", href: "/admin/bidang", icon: Users },
+  { name: "Program Kerja", href: "/admin/proker", icon: FileText },
+  { name: "Galeri Aktivitas", href: "/admin/gallery", icon: ImageIcon },
+  { name: "Booking Studio", href: "/admin/booking-studio", icon: Calendar },
   { name: "Barang Sewa", href: "/admin/rental", icon: Package },
   { name: "Peserta Band", href: "/admin/bands", icon: Music },
+  { name: "Peserta Vokal Solo", href: "/admin/vocal-solo", icon: Mic2 },
   { name: "Juri Lomba", href: "/admin/juries", icon: UserCheck },
-  { name: "Skor Band", href: "/admin/scores", icon: ClipboardList },
+  { name: "Rekap & Skor Lomba", href: "/admin/scores", icon: ClipboardList },
+  { name: "Pengaturan Utama", href: "/admin/settings", icon: Settings },
   { name: "Kontak", href: "/admin/contact", icon: Phone },
 ];
 
