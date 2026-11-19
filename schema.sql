@@ -366,6 +366,7 @@ CREATE TABLE IF NOT EXISTS public.band_scores (
 CREATE TABLE IF NOT EXISTS public.juries (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   name text NOT NULL,
+  token text UNIQUE,
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -417,6 +418,7 @@ CREATE POLICY "Allow authenticated full access on bands" ON public.bands FOR ALL
 -- Policies for Band Scores
 CREATE POLICY "Allow public read access on band_scores" ON public.band_scores FOR SELECT USING (true);
 CREATE POLICY "Allow public insert access on band_scores" ON public.band_scores FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public update access on band_scores" ON public.band_scores FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "Allow authenticated full access on band_scores" ON public.band_scores FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- Policies for Juries
@@ -430,13 +432,22 @@ CREATE POLICY "Allow authenticated full access on vocal_solos" ON public.vocal_s
 -- Policies for Vocal Scores
 CREATE POLICY "Allow public read access on vocal_scores" ON public.vocal_scores FOR SELECT USING (true);
 CREATE POLICY "Allow public insert access on vocal_scores" ON public.vocal_scores FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public update access on vocal_scores" ON public.vocal_scores FOR UPDATE USING (true) WITH CHECK (true);
 CREATE POLICY "Allow authenticated full access on vocal_scores" ON public.vocal_scores FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- ========================================================
 -- MIGRATION SCRIPT FOR EXISTING DATABASE
--- (Jalankan blok di bawah ini jika tabel bands / band_scores sudah ada sebelumnya)
+-- (Jalankan blok di bawah ini jika database sudah ada sebelumnya)
 -- ========================================================
 /*
+-- 1. Tambah kolom token unik pada tabel juries
+ALTER TABLE public.juries ADD COLUMN IF NOT EXISTS token text UNIQUE;
+
+-- 2. Kebijakan Update Nilai oleh Juri
+CREATE POLICY "Allow public update access on band_scores" ON public.band_scores FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public update access on vocal_scores" ON public.vocal_scores FOR UPDATE USING (true) WITH CHECK (true);
+
+-- 3. Kolom Tambahan Bands & Kriteria Band Scores (jika belum ada)
 ALTER TABLE public.bands 
   ADD COLUMN IF NOT EXISTS nomor_undi text,
   ADD COLUMN IF NOT EXISTS song_title text,

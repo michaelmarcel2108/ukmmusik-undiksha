@@ -14,7 +14,12 @@ import {
   ChevronUp,
   AlertCircle,
   RefreshCw,
-  Trophy
+  Trophy,
+  Key,
+  LogOut,
+  UserCheck,
+  ShieldCheck,
+  Loader2
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Toast from "@/components/ui/Toast";
@@ -34,10 +39,13 @@ export default function PenilaianJuri() {
   const [juriesList, setJuriesList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Authentication
+  // Authentication & Jury Token
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
+  const [tokenInput, setTokenInput] = useState("");
+  const [tokenError, setTokenError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [loggedInJury, setLoggedInJury] = useState<any>(null);
+  const [isMasterAdmin, setIsMasterAdmin] = useState(false);
 
   // Selected Jury
   const [juryName, setJuryName] = useState("");
@@ -65,6 +73,19 @@ export default function PenilaianJuri() {
 
   useEffect(() => {
     fetchInitialData();
+
+    // Check URL query param (?token=...) or saved token in sessionStorage
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get("token");
+      const savedToken = sessionStorage.getItem("rgc_jury_token");
+      const initialToken = urlToken || savedToken;
+
+      if (initialToken) {
+        setTokenInput(initialToken);
+        validateAndLogin(initialToken);
+      }
+    }
   }, []);
 
   // When jury changes, load any previously submitted scores by this jury
@@ -349,14 +370,73 @@ export default function PenilaianJuri() {
     }
   };
 
-  // Password Gate
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passwordInput.trim() === "RGCXVII2026") {
+  // Token & Master Login Handlers
+  const validateAndLogin = async (rawToken: string) => {
+    const trimmed = rawToken.trim();
+    if (!trimmed) {
+      setTokenError("Silakan masukkan token akses juri.");
+      return;
+    }
+
+    setIsVerifying(true);
+    setTokenError("");
+
+    // Support master admin bypass
+    if (trimmed === "RGCXVII2026") {
       setIsAuthenticated(true);
-      setPasswordError(false);
-    } else {
-      setPasswordError(true);
+      setIsMasterAdmin(true);
+      setLoggedInJury(null);
+      setIsVerifying(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("juries")
+        .select("*")
+        .ilike("token", trimmed)
+        .maybeSingle();
+
+      if (error || !data) {
+        setTokenError("Token juri tidak valid atau tidak terdaftar. Hubungi panitia.");
+        setIsVerifying(false);
+        return;
+      }
+
+      // Valid jury token found!
+      setLoggedInJury(data);
+      setJuryName(data.name);
+      setIsAuthenticated(true);
+      setIsMasterAdmin(false);
+
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("rgc_jury_token", data.token);
+      }
+    } catch (err: any) {
+      setTokenError("Terjadi kesalahan saat memvalidasi token: " + err.message);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    validateAndLogin(tokenInput);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setLoggedInJury(null);
+    setJuryName("");
+    setIsMasterAdmin(false);
+    setTokenInput("");
+    setTokenError("");
+
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("rgc_jury_token");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("token");
+      window.history.replaceState({}, "", url.pathname);
     }
   };
 
@@ -389,7 +469,7 @@ export default function PenilaianJuri() {
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-ukmred via-yellow-500 to-ukmred" />
           <div className="flex justify-center mb-6">
             <div className="w-20 h-20 bg-ukmred/10 text-ukmred rounded-2xl flex items-center justify-center shadow-inner">
-              <Trophy size={40} />
+              <Key size={38} />
             </div>
           </div>
           <div className="text-center mb-6">
@@ -402,34 +482,54 @@ export default function PenilaianJuri() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-1.5">
-                Kata Sandi Juri
+                Token Akses Juri
               </label>
               <input
-                type="password"
+                type="text"
                 required
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                placeholder="Masukkan kode akses juri..."
-                className={`w-full px-4 py-3 border rounded-xl bg-background text-base focus:outline-none transition-all ${
-                  passwordError
+                value={tokenInput}
+                onChange={(e) => {
+                  setTokenInput(e.target.value);
+                  if (tokenError) setTokenError("");
+                }}
+                placeholder="Contoh: JURI-RAMA-77"
+                className={`w-full px-4 py-3 border rounded-xl bg-background text-base font-mono font-bold tracking-wider uppercase focus:outline-none transition-all ${
+                  tokenError
                     ? "border-red-500 focus:ring-2 focus:ring-red-500/20"
                     : "border-border focus:border-ukmred focus:ring-2 focus:ring-ukmred/20"
                 }`}
               />
-              {passwordError && (
-                <p className="text-red-500 text-xs font-medium mt-2 flex items-center gap-1">
-                  <AlertCircle size={14} /> Kata sandi tidak valid. Hubungi panitia.
+              {tokenError ? (
+                <p className="text-red-500 text-xs font-medium mt-2 flex items-center gap-1.5">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{tokenError}</span>
+                </p>
+              ) : (
+                <p className="text-xs text-foreground/50 mt-1.5">
+                  Masukkan token pribadi yang dibagikan panitia untuk membuka lembar penilaian Anda.
                 </p>
               )}
             </div>
+
             <button
               type="submit"
-              className="w-full bg-ukmred hover:bg-ukmred-dark text-white px-4 py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl active:scale-[0.99] flex items-center justify-center gap-2"
+              disabled={isVerifying}
+              className="w-full bg-ukmred hover:bg-ukmred-dark text-white px-4 py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
             >
-              Masuk ke Lembar Penilaian
+              {isVerifying ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  <span>Memverifikasi Token...</span>
+                </>
+              ) : (
+                <>
+                  <ShieldCheck size={18} />
+                  <span>Masuk ke Lembar Penilaian</span>
+                </>
+              )}
             </button>
           </form>
         </div>
@@ -460,24 +560,65 @@ export default function PenilaianJuri() {
 
         {/* CONTROLS BAR: JURY SELECTOR & COMPETITION TABS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-6">
-          {/* JURY SELECTOR */}
-          <div className="lg:col-span-5 bg-card border border-border p-4 rounded-2xl shadow-sm">
-            <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-1.5">
-              Dewan Juri Yang Bertugas *
-            </label>
-            <select
-              required
-              value={juryName}
-              onChange={(e) => setJuryName(e.target.value)}
-              className="w-full px-4 py-2.5 border border-border rounded-xl bg-background font-bold text-base focus:ring-2 focus:ring-ukmred/20 focus:border-ukmred outline-none"
-            >
-              <option value="" disabled>-- Pilih Nama Dewan Juri --</option>
-              {juriesList.map((juri) => (
-                <option key={juri.id} value={juri.name}>
-                  {juri.name}
-                </option>
-              ))}
-            </select>
+          {/* JURY BADGE / SELECTOR */}
+          <div className="lg:col-span-5 bg-card border border-border p-3.5 rounded-2xl shadow-sm">
+            {loggedInJury ? (
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-ukmred/10 text-ukmred flex items-center justify-center shrink-0">
+                    <UserCheck size={20} />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-ukmred flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Dewan Juri Terverifikasi
+                    </span>
+                    <h2 className="text-base font-black text-foreground truncate">
+                      {juryName}
+                    </h2>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="shrink-0 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-border hover:border-red-500/40 hover:bg-red-500/10 text-foreground/70 hover:text-red-400 flex items-center gap-1.5 transition-colors"
+                  title="Keluar / Ganti Juri"
+                >
+                  <LogOut size={13} />
+                  <span>Ganti Juri</span>
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70">
+                    Dewan Juri Yang Bertugas *
+                  </label>
+                  {isMasterAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="text-[10px] text-red-400 hover:underline flex items-center gap-1 font-semibold"
+                    >
+                      <LogOut size={10} /> Logout Master
+                    </button>
+                  )}
+                </div>
+                <select
+                  required
+                  value={juryName}
+                  onChange={(e) => setJuryName(e.target.value)}
+                  className="w-full px-4 py-2 border border-border rounded-xl bg-background font-bold text-base focus:ring-2 focus:ring-ukmred/20 focus:border-ukmred outline-none"
+                >
+                  <option value="" disabled>-- Pilih Nama Dewan Juri --</option>
+                  {juriesList.map((juri) => (
+                    <option key={juri.id} value={juri.name}>
+                      {juri.name} {juri.token ? `(${juri.token})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* COMPETITION TABS */}
