@@ -29,6 +29,23 @@ export default function RootLayout({
             __html: `
               (function() {
                 if (typeof window !== 'undefined') {
+                  // Suppress unhandled promise rejections originating from browser extensions
+                  window.addEventListener('unhandledrejection', function(event) {
+                    var reason = event.reason;
+                    var stack = (reason && reason.stack) ? String(reason.stack) : '';
+                    var message = (reason && reason.message) ? String(reason.message) : '';
+                    if (
+                      stack.includes('chrome-extension://') ||
+                      stack.includes('moz-extension://') ||
+                      stack.includes('safari-extension://') ||
+                      message.includes('M_ID')
+                    ) {
+                      event.preventDefault();
+                      event.stopImmediatePropagation();
+                    }
+                  });
+
+                  // Clean up extension-injected attributes
                   const observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                       if (mutation.type === 'attributes' && mutation.attributeName === 'bis_skin_checked') {
@@ -38,7 +55,6 @@ export default function RootLayout({
                   });
                   observer.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['bis_skin_checked'] });
                   
-                  // Also clean up any existing ones just in case
                   window.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('[bis_skin_checked]').forEach(function(el) {
                       el.removeAttribute('bis_skin_checked');

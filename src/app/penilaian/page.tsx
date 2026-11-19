@@ -352,7 +352,7 @@ export default function PenilaianJuri() {
   // Password Gate
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === "ROTASIX2026") {
+    if (passwordInput.trim() === "RGCXVII2026") {
       setIsAuthenticated(true);
       setPasswordError(false);
     } else {

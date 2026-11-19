@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { 
-  Crown, 
-  ShieldCheck, 
-  Users, 
-  ArrowRight, 
-  Sparkles, 
-  CheckCircle2, 
-  Globe, 
+import {
+  Crown,
+  ShieldCheck,
+  Users,
+  ArrowRight,
+  Sparkles,
+  CheckCircle2,
+  Globe,
   BookOpen,
   Briefcase,
   GraduationCap
@@ -33,7 +33,7 @@ export default async function PengurusIntiPage() {
   const rolesWithData = CORE_ROLES_CONFIG.map((config) => {
     const foundInDb = dbCoreMembers?.find(
       (m) => m.role.toLowerCase().trim() === config.role.toLowerCase().trim() ||
-             m.role.toLowerCase().includes(config.role.toLowerCase())
+        m.role.toLowerCase().includes(config.role.toLowerCase())
     );
 
     return {
@@ -53,20 +53,20 @@ export default async function PengurusIntiPage() {
   return (
     <div className="pt-24 pb-24 min-h-screen bg-background text-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* HERO SECTION */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-ukmred bg-ukmred/10 border border-ukmred/20 rounded-full mb-4 shadow-sm">
             <Crown size={15} /> BADAN PENGURUS HARIAN (BPH) • MASA BAKTI 2026/2027
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-wider mb-4 leading-tight">
             Dewan <span className="text-ukmred">Pengurus Inti</span>
           </h1>
           <div className="h-1.5 w-24 bg-ukmred mx-auto rounded-full mb-6" />
-          
+
           <p className="text-foreground/75 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-            Berdasarkan Ketetapan Sidang Rapat Kerja UKM Musik Undiksha No. 03/TAP/SIDANG RAKER/07/VII/2026, 
+            Berdasarkan Ketetapan Sidang Rapat Kerja UKM Musik Undiksha No. 03/TAP/SIDANG RAKER/07/VII/2026,
             Dewan Pengurus Inti memegang peranan pimpinan eksekutif tertinggi yang menaungi seluruh fungsionaris dan 4 Bidang Operasional.
           </p>
         </div>
@@ -82,8 +82,8 @@ export default async function PengurusIntiPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {ADVISORS_CONFIG.map((advisor, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="bg-card border border-border rounded-3xl p-6 text-center hover:border-ukmred/40 transition-all shadow-sm flex flex-col items-center"
               >
                 <div className="w-24 h-24 rounded-full overflow-hidden bg-background border-2 border-border mb-4 shadow-md">
@@ -105,19 +105,19 @@ export default async function PengurusIntiPage() {
 
         {/* HIERARCHICAL LEADERSHIP STRUCTURE */}
         <div className="space-y-12 mb-24">
-          
+
           {/* LEVEL 1: KETUA UMUM */}
           {ketua && (
             <div className="max-w-3xl mx-auto">
               <div className="bg-card border-2 border-ukmred/40 hover:border-ukmred rounded-3xl p-6 sm:p-8 shadow-xl transition-all duration-300 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-ukmred/10 rounded-full blur-3xl pointer-events-none" />
-                
+
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="relative shrink-0">
                     <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden bg-background border-2 border-border shadow-md group-hover:scale-105 transition-transform duration-500">
-                      <img 
-                        src={ketua.photoUrl} 
-                        alt={ketua.currentName} 
+                      <img
+                        src={ketua.photoUrl}
+                        alt={ketua.currentName}
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
@@ -141,9 +141,9 @@ export default async function PengurusIntiPage() {
                     </p>
 
                     {ketua.instagram && (
-                      <a 
-                        href={ketua.instagram} 
-                        target="_blank" 
+                      <a
+                        href={ketua.instagram}
+                        target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 text-xs text-foreground/60 hover:text-ukmred transition-colors"
                       >
@@ -178,9 +178,9 @@ export default async function PengurusIntiPage() {
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="relative shrink-0">
                     <div className="w-36 h-36 md:w-44 md:h-44 rounded-2xl overflow-hidden bg-background border border-border shadow-md group-hover:scale-105 transition-transform duration-500">
-                      <img 
-                        src={wakil.photoUrl} 
-                        alt={wakil.currentName} 
+                      <img
+                        src={wakil.photoUrl}
+                        alt={wakil.currentName}
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
@@ -230,15 +230,15 @@ export default async function PengurusIntiPage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {sekretarisList.map((sec) => (
-                <div 
-                  key={sec.key} 
+                <div
+                  key={sec.key}
                   className="bg-card border border-border hover:border-ukmred/50 rounded-3xl p-6 shadow-md transition-all duration-300 flex flex-col group h-full"
                 >
                   <div className="flex items-center gap-5 mb-4">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden bg-background border border-border shrink-0 group-hover:scale-105 transition-transform">
-                      <img 
-                        src={sec.photoUrl} 
-                        alt={sec.currentName} 
+                      <img
+                        src={sec.photoUrl}
+                        alt={sec.currentName}
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
@@ -285,15 +285,15 @@ export default async function PengurusIntiPage() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {bendaharaList.map((ben) => (
-                <div 
-                  key={ben.key} 
+                <div
+                  key={ben.key}
                   className="bg-card border border-border hover:border-emerald-500/50 rounded-3xl p-6 shadow-md transition-all duration-300 flex flex-col group h-full"
                 >
                   <div className="flex items-center gap-5 mb-4">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden bg-background border border-border shrink-0 group-hover:scale-105 transition-transform">
-                      <img 
-                        src={ben.photoUrl} 
-                        alt={ben.currentName} 
+                      <img
+                        src={ben.photoUrl}
+                        alt={ben.currentName}
                         className="w-full h-full object-cover object-top"
                       />
                     </div>
@@ -344,10 +344,10 @@ export default async function PengurusIntiPage() {
               Menaungi 4 Bidang Operasional
             </h2>
             <p className="text-foreground/70 text-sm sm:text-base leading-relaxed mb-6">
-              Dewan Pengurus Inti bekerja sama dengan 4 pilar bidang operasional untuk merealisasikan seluruh mandat 
+              Dewan Pengurus Inti bekerja sama dengan 4 pilar bidang operasional untuk merealisasikan seluruh mandat
               GBPK 2026/2027: <strong>Pelatihan & Pengembangan</strong>, <strong>Humas & Publikasi</strong>, <strong>Inventaris</strong>, dan <strong>Kesejahteraan Anggota</strong>.
             </p>
-            
+
             <Link
               href="/bidang"
               className="inline-flex items-center gap-2 bg-ukmred hover:bg-ukmred-dark text-white px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-md hover:shadow-xl active:scale-95"

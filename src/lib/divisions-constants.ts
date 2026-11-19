@@ -48,7 +48,7 @@ Pokok-Pokok Program Kerja (GBPK 2026/2027):
     members: [
       { name: "Kadek Christian Paramartha Dwipayana", role: "Koordinator Bidang", divisionGroup: "Pimpinan Bidang" },
       { name: "Mutiara Gayatri", role: "Sekretaris Bidang", divisionGroup: "Pimpinan Bidang" },
-      
+
       // DIVISI I (Eksplorasi Musik)
       { name: "Reva Yenni R. Ginting", role: "Koordinator Divisi", divisionGroup: "Divisi I (Eksplorasi Musik)" },
       { name: "Kadek Krisna Dipayana", role: "Anggota Divisi", divisionGroup: "Divisi I (Eksplorasi Musik)" },

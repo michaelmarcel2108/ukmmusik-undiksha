@@ -149,9 +149,9 @@ export default function AdminPengurusInti() {
   return (
     <div className="relative">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-      <ConfirmModal 
-        isOpen={!!deleteId} 
-        title="Hapus Pengurus Inti?" 
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Hapus Pengurus Inti?"
         message="Data fungsionaris pengurus inti ini akan dihapus secara permanen."
         onConfirm={confirmDelete}
         onCancel={() => setDeleteId(null)}
@@ -176,7 +176,7 @@ export default function AdminPengurusInti() {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <button 
+          <button
             type="button"
             onClick={handleInitStandard}
             disabled={isInitializing}
@@ -187,7 +187,7 @@ export default function AdminPengurusInti() {
             {isInitializing ? "Memproses..." : "Inisialisasi Jabatan Pokok"}
           </button>
 
-          <button 
+          <button
             onClick={() => {
               setFormData({
                 id: "",
@@ -213,7 +213,7 @@ export default function AdminPengurusInti() {
           <button onClick={() => setIsAdding(false)} className="absolute top-5 right-5 text-foreground/50 hover:text-foreground">
             <X size={20} />
           </button>
-          
+
           <h2 className="text-xl font-bold mb-4">
             {formData.id ? "Edit Data Pengurus Inti" : "Tambah Pengurus Inti Baru"}
           </h2>
@@ -222,25 +222,25 @@ export default function AdminPengurusInti() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold mb-1">Nama Lengkap & Gelar</label>
-                <input 
-                  required 
-                  type="text" 
-                  value={formData.name} 
-                  onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background" 
-                  placeholder="Contoh: I Gede Wiradana" 
+                <input
+                  required
+                  type="text"
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background"
+                  placeholder="Contoh: I Gede Wiradana"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-1">Jabatan Pokok</label>
-                <input 
-                  required 
-                  type="text" 
-                  value={formData.role} 
-                  onChange={e => setFormData({ ...formData, role: e.target.value })} 
-                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background" 
-                  placeholder="Ketua Umum / Wakil / Sekretaris / Bendahara" 
+                <input
+                  required
+                  type="text"
+                  value={formData.role}
+                  onChange={e => setFormData({ ...formData, role: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background"
+                  placeholder="Ketua Umum / Wakil / Sekretaris / Bendahara"
                 />
               </div>
             </div>
@@ -248,58 +248,58 @@ export default function AdminPengurusInti() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-1">Urutan Tampilan</label>
-                <input 
-                  type="number" 
-                  value={formData.order_index} 
-                  onChange={e => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })} 
-                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background" 
-                  placeholder="1 (Ketua), 2 (Wakil), dst." 
+                <input
+                  type="number"
+                  value={formData.order_index}
+                  onChange={e => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
+                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background"
+                  placeholder="1 (Ketua), 2 (Wakil), dst."
                 />
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold mb-1">Link Instagram (Opsional)</label>
-                <input 
-                  type="url" 
-                  value={formData.instagram_url} 
-                  onChange={e => setFormData({ ...formData, instagram_url: e.target.value })} 
-                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background" 
-                  placeholder="https://instagram.com/username" 
+                <input
+                  type="url"
+                  value={formData.instagram_url}
+                  onChange={e => setFormData({ ...formData, instagram_url: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-border rounded-xl bg-background"
+                  placeholder="https://instagram.com/username"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-1">Foto Formal / Jas Organisasi</label>
-              <ImageUpload 
-                value={formData.photo_url} 
-                onChange={(url) => setFormData({ ...formData, photo_url: url })} 
+              <ImageUpload
+                value={formData.photo_url}
+                onChange={(url) => setFormData({ ...formData, photo_url: url })}
                 folder="pengurus-inti"
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-1">Biografi / Deskripsi Peran</label>
-              <textarea 
-                rows={3} 
-                value={formData.bio} 
-                onChange={e => setFormData({ ...formData, bio: e.target.value })} 
-                className="w-full px-4 py-2 border border-border rounded-xl bg-background text-sm" 
-                placeholder="Penjelasan mandat jabatan dan visi kepemimpinan..." 
+              <textarea
+                rows={3}
+                value={formData.bio}
+                onChange={e => setFormData({ ...formData, bio: e.target.value })}
+                className="w-full px-4 py-2 border border-border rounded-xl bg-background text-sm"
+                placeholder="Penjelasan mandat jabatan dan visi kepemimpinan..."
               />
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <button 
-                type="button" 
-                onClick={() => setIsAdding(false)} 
+              <button
+                type="button"
+                onClick={() => setIsAdding(false)}
                 className="px-5 py-2.5 border border-border rounded-xl font-medium hover:bg-background"
               >
                 Batal
               </button>
-              <button 
-                type="submit" 
-                disabled={isSaving} 
+              <button
+                type="submit"
+                disabled={isSaving}
                 className="bg-ukmred hover:bg-ukmred-dark text-white px-6 py-2.5 rounded-xl font-bold disabled:opacity-50 shadow"
               >
                 {isSaving ? "Menyimpan..." : (formData.id ? "Simpan Perubahan" : "Tambahkan")}
@@ -356,9 +356,9 @@ export default function AdminPengurusInti() {
                     <td className="p-4">
                       <div className="font-bold text-base text-foreground">{item.name}</div>
                       {item.instagram_url && (
-                        <a 
-                          href={item.instagram_url} 
-                          target="_blank" 
+                        <a
+                          href={item.instagram_url}
+                          target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-1 text-xs text-foreground/50 hover:text-ukmred"
                         >
@@ -371,16 +371,16 @@ export default function AdminPengurusInti() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-1.5">
-                        <button 
-                          onClick={() => handleEdit(item)} 
-                          className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors" 
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit size={18} />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(item.id)} 
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" 
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Hapus"
                         >
                           <Trash2 size={18} />
