@@ -17,7 +17,8 @@ import {
   Mic2,
   ClipboardList,
   UserCheck,
-  Crown
+  Crown,
+  CreditCard
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
@@ -32,6 +33,7 @@ const menuItems = [
   { name: "Barang Sewa", href: "/admin/rental", icon: Package },
   { name: "Peserta Band", href: "/admin/bands", icon: Music },
   { name: "Peserta Vokal Solo", href: "/admin/vocal-solo", icon: Mic2 },
+  { name: "Generator Kartu", href: "/admin/card-generator", icon: CreditCard },
   { name: "Juri Lomba", href: "/admin/juries", icon: UserCheck },
   { name: "Rekap & Skor Lomba", href: "/admin/scores", icon: ClipboardList },
   { name: "Pengaturan Utama", href: "/admin/settings", icon: Settings },
