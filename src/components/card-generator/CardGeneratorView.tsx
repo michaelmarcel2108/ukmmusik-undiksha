@@ -7,7 +7,7 @@ import {
   PRESET_BAND, 
   PRESET_VOCAL 
 } from "./types";
-import { generateDummyParticipants } from "./dummyData";
+import { generateDummyParticipants, getOfficialParticipants } from "./dummyData";
 import CardCanvasPreview from "./CardCanvasPreview";
 import LayoutEditor from "./LayoutEditor";
 import ParticipantManager from "./ParticipantManager";
@@ -31,8 +31,8 @@ export default function CardGeneratorView({ defaultCategory = "band" }: { defaul
 
   // Initialize with 99 dummy participants and load saved config from localStorage on mount
   useEffect(() => {
-    // 1. Load participants
-    const initialParticipants = generateDummyParticipants(99, category);
+    // 1. Load official participants who submitted video
+    const initialParticipants = getOfficialParticipants(category);
     setParticipants(initialParticipants);
 
     // 2. Load cached config if exists
@@ -57,7 +57,7 @@ export default function CardGeneratorView({ defaultCategory = "band" }: { defaul
     setCategory(cat);
     const newPreset = cat === "vocal" ? PRESET_VOCAL : PRESET_BAND;
     setConfig(newPreset);
-    const newParticipants = generateDummyParticipants(99, cat);
+    const newParticipants = getOfficialParticipants(cat);
     setParticipants(newParticipants);
     setCurrentIndex(0);
   };

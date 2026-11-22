@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { Participant } from "./types";
-import { generateDummyParticipants } from "./dummyData";
+import { generateDummyParticipants, getOfficialParticipants } from "./dummyData";
 import { formatParticipantNumber } from "./canvasRenderer";
 import { createClient } from "@/utils/supabase/client";
 import {
@@ -43,30 +43,36 @@ export default function ParticipantManager({
   const csvInputRef = useRef<HTMLInputElement | null>(null);
   const batchPhotoRef = useRef<HTMLInputElement | null>(null);
 
-  // 1. Generate Dummy 99 Peserta
+  // 1. Muat Peserta Resmi yang Mengirim Video (Berdasarkan PDF & Database)
   const handleGenerate99 = () => {
-    const dummy = generateDummyParticipants(99, category);
-    onChangeParticipants(dummy);
+    const list = getOfficialParticipants(category);
+    onChangeParticipants(list);
     onSelectIndex(0);
-    setStatusMsg({ text: "Berhasil menghasilkan 99 data dummy peserta!", type: "success" });
+    setStatusMsg({
+      text: `Berhasil memuat ${list.length} data peserta resmi ${category === "band" ? "Lomba Band" : "Lomba Vokal Solo"} yang telah mengirim video!`,
+      type: "success",
+    });
   };
 
-  // 2. Tarik Data dari Database Supabase (bands atau vocal_solos)
+  // 2. Tarik Data dari Database Supabase (Hanya yang mengirimkan video_url)
   const handlePullFromDb = async () => {
     setIsPullingDb(true);
     setStatusMsg(null);
     try {
       const supabase = createClient();
       const tableName = category === "band" ? "bands" : "vocal_solos";
+      // Filter hanya peserta yang sudah mengisi video_url (tidak null dan tidak kosong)
       const { data, error } = await supabase
         .from(tableName)
-        .select("id, nomor_undi, name")
+        .select("id, nomor_undi, name, video_url")
+        .not("video_url", "is", null)
+        .neq("video_url", "")
         .order("nomor_undi", { ascending: true, nullsFirst: false });
 
       if (error) throw error;
 
       if (!data || data.length === 0) {
-        setStatusMsg({ text: `Tidak ada data di tabel '${tableName}' database.`, type: "error" });
+        setStatusMsg({ text: `Tidak ada data peserta dengan video_url di tabel '${tableName}'.`, type: "error" });
         return;
       }
 
@@ -84,7 +90,7 @@ export default function ParticipantManager({
       onChangeParticipants(mapped);
       onSelectIndex(0);
       setStatusMsg({
-        text: `Berhasil mengimpor ${mapped.length} peserta dari database (${tableName})!`,
+        text: `Berhasil mengimpor ${mapped.length} peserta resmi dengan video dari database (${tableName})!`,
         type: "success",
       });
     } catch (err: any) {
@@ -270,7 +276,7 @@ export default function ParticipantManager({
             className="flex items-center justify-center gap-2 py-2.5 px-3 bg-gradient-to-r from-ukmred to-orange-600 hover:from-ukmred-dark hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-ukmred/20 transition-all"
           >
             <Sparkles size={15} />
-            Generate 99 Peserta
+            Muat Peserta Resmi (Video)
           </button>
 
           <button
