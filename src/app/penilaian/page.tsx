@@ -757,26 +757,26 @@ export default function PenilaianJuri() {
             </div>
           ) : (
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[1200px]">
-                  <thead>
+              <div className="overflow-auto max-h-[75vh] md:max-h-[78vh]">
+                <table className="w-full text-left border-separate border-spacing-0 min-w-[1200px]">
+                  <thead className="sticky top-0 z-20 shadow-md">
                     <tr className="bg-ukmred text-white text-xs uppercase tracking-wide">
-                      <th className="p-3 font-bold w-14 text-center border-r border-white/20">NO. UNDI</th>
-                      <th className="p-3 font-bold min-w-[180px] border-r border-white/20">NAMA BAND & LAGU</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold w-14 text-center border-r border-white/20 z-20 shadow-sm">NO. UNDI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold min-w-[180px] border-r border-white/20 z-20 shadow-sm">NAMA BAND & LAGU</th>
                       {BAND_CRITERIA.map((c) => (
-                        <th key={c.key} className="p-2 font-bold w-24 text-center border-r border-white/20">
+                        <th key={c.key} className="sticky top-0 bg-ukmred p-2 font-bold w-24 text-center border-r border-white/20 z-20 shadow-sm">
                           <span className="block leading-tight text-[11px]">{c.label}</span>
                           <span className="text-[10px] text-yellow-300 font-extrabold">{c.weight}%</span>
                         </th>
                       ))}
-                      <th className="p-2 font-bold w-20 text-center border-r border-white/20 text-xs">
+                      <th className="sticky top-0 bg-ukmred p-2 font-bold w-20 text-center border-r border-white/20 text-xs z-20 shadow-sm">
                         TOTAL<br /><span className="text-[10px] opacity-80">(MURNI)</span>
                       </th>
-                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">
+                      <th className="sticky top-0 bg-ukmred p-2 font-bold w-24 text-center border-r border-white/20 text-xs z-20 shadow-sm">
                         TOTAL<br /><span className="text-[10px] text-yellow-300 font-extrabold">(BOBOT %)</span>
                       </th>
-                      <th className="p-3 font-bold min-w-[140px] border-r border-white/20">CATATAN JURI</th>
-                      <th className="p-3 font-bold w-28 text-center">AKSI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold min-w-[140px] border-r border-white/20 z-20 shadow-sm">CATATAN JURI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold w-28 text-center z-20 shadow-sm">AKSI</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -905,26 +905,26 @@ export default function PenilaianJuri() {
             </div>
           ) : (
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[1200px]">
-                  <thead>
+              <div className="overflow-auto max-h-[75vh] md:max-h-[78vh]">
+                <table className="w-full text-left border-separate border-spacing-0 min-w-[1200px]">
+                  <thead className="sticky top-0 z-20 shadow-md">
                     <tr className="bg-ukmred text-white text-xs uppercase tracking-wide">
-                      <th className="p-3 font-bold w-14 text-center border-r border-white/20">NO. UNDI</th>
-                      <th className="p-3 font-bold min-w-[180px] border-r border-white/20">NAMA PESERTA & LAGU</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold w-14 text-center border-r border-white/20 z-20 shadow-sm">NO. UNDI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold min-w-[180px] border-r border-white/20 z-20 shadow-sm">NAMA PESERTA & LAGU</th>
                       {VOCAL_CRITERIA.map((c) => (
-                        <th key={c.key} className="p-2 font-bold w-24 text-center border-r border-white/20">
+                        <th key={c.key} className="sticky top-0 bg-ukmred p-2 font-bold w-24 text-center border-r border-white/20 z-20 shadow-sm">
                           <span className="block leading-tight text-[11px]">{c.label}</span>
                           <span className="text-[10px] text-yellow-300 font-extrabold">{c.weight}%</span>
                         </th>
                       ))}
-                      <th className="p-2 font-bold w-20 text-center border-r border-white/20 text-xs">
+                      <th className="sticky top-0 bg-ukmred p-2 font-bold w-20 text-center border-r border-white/20 text-xs z-20 shadow-sm">
                         TOTAL<br /><span className="text-[10px] opacity-80">(MURNI)</span>
                       </th>
-                      <th className="p-2 font-bold w-24 text-center border-r border-white/20 text-xs">
+                      <th className="sticky top-0 bg-ukmred p-2 font-bold w-24 text-center border-r border-white/20 text-xs z-20 shadow-sm">
                         TOTAL<br /><span className="text-[10px] text-yellow-300 font-extrabold">(BOBOT %)</span>
                       </th>
-                      <th className="p-3 font-bold min-w-[140px] border-r border-white/20">CATATAN JURI</th>
-                      <th className="p-3 font-bold w-28 text-center">AKSI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold min-w-[140px] border-r border-white/20 z-20 shadow-sm">CATATAN JURI</th>
+                      <th className="sticky top-0 bg-ukmred p-3 font-bold w-28 text-center z-20 shadow-sm">AKSI</th>
                     </tr>
                   </thead>
                   <tbody>
